@@ -1,0 +1,113 @@
+# Importing the libraries
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+import pandas as pd
+
+# Importing the dataset
+
+dataset = pd.read_csv(r'C:\Users\admin\Desktop\subha\Social_Network_Ads.csv')
+
+X = dataset.iloc[:, [2, 3]].values
+
+y = dataset.iloc[:, -1].values
+
+# Splitting the dataset into the Training set and Test set
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
+
+# Feature Scaling
+
+from sklearn.preprocessing import StandardScaler
+
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+
+X_test = sc.transform(X_test)
+
+# Training the K-NN model on the Training set
+
+from sklearn.neighbors import KNeighborsClassifier
+
+classifier20 = KNeighborsClassifier(n_neighbors = 20, metric = 'minkowski', p = 2)
+
+classifier20.fit(X_train, y_train)
+
+classifier10 = KNeighborsClassifier(n_neighbors = 10, metric = 'minkowski', p = 2)
+
+classifier10.fit(X_train, y_train)
+
+classifier5 = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+
+classifier5.fit(X_train, y_train)
+
+classifier1 = KNeighborsClassifier(n_neighbors = 1, metric = 'minkowski', p = 2)
+
+classifier1.fit(X_train, y_train)
+
+# Predicting the Test set results
+
+y_pred20 = classifier20.predict(X_test)
+
+y_pred10 = classifier10.predict(X_test)
+
+y_pred5 = classifier5.predict(X_test)
+
+y_pred1 = classifier1.predict(X_test)
+
+# Making the Confusion Matrix
+
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+cm20 = confusion_matrix(y_test, y_pred20)
+
+ac20 = accuracy_score(y_test, y_pred20)
+
+print(cm20)
+
+print(ac20)
+
+cm10 = confusion_matrix(y_test, y_pred10)
+
+ac10 = accuracy_score(y_test, y_pred10)
+
+print(cm10)
+
+print(ac10)
+
+cm5 = confusion_matrix(y_test, y_pred5)
+
+ac5 = accuracy_score(y_test, y_pred5)
+
+print(cm5)
+
+print(ac5)
+
+cm1 = confusion_matrix(y_test, y_pred1)
+
+ac1 = accuracy_score(y_test, y_pred1)
+
+print(cm1)
+
+print(ac1)
+
+plt.figure(figsize = (15,5))
+
+plt.subplot(1,2,1)
+
+plt.scatter(X_test[:,0], X_test[:,1], c=y_pred5, marker= '*', s=100,edgecolors='black')
+
+plt.title("Predicted values with k=5", fontsize=20)
+
+plt.subplot(1,2,2)
+
+plt.scatter(X_test[:,0], X_test[:,1], c=y_pred1, marker= '*', s=100,edgecolors='black')
+
+plt.title("Predicted values with k=1", fontsize=20)
+
+plt.show()
