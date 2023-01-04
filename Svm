@@ -1,0 +1,62 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Importing the datasets
+df = pd.read_csv('Social_Network_Ads.csv')
+X = df.iloc[:, [2,3]]
+Y = df.iloc[:, 4]
+
+
+# Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size = 0.25, random_state = 0)
+
+
+## Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
+X_Train = sc_X.fit_transform(X_Train)
+X_Test = sc_X.transform(X_Test)
+
+####using linear
+from sklearn.svm import SVC
+classifier = SVC(kernel = 'linear', random_state = 0)
+classifier.fit(X_Train, Y_Train)
+# Predicting the test set results
+Y_Pred = classifier.predict(X_Test)
+Y_Pred
+from sklearn import metrics
+print('Accuracy Score: with linear kernel')
+print(metrics.accuracy_score(Y_Test,Y_Pred))
+
+##using rbf
+from sklearn.svm import SVC
+classifier1 = SVC(kernel = 'rbf')
+classifier1.fit(X_Train, Y_Train)
+# Predicting the test set results
+Y_Pred = classifier1.predict(X_Test)
+print('Accuracy Score: with default rbf kernel')
+print(metrics.accuracy_score(Y_Test,Y_Pred))
+
+##using poly
+svc=SVC(kernel='poly', degree = 4)
+svc.fit(X_Train,Y_Train)
+y_pred=svc.predict(X_Test)
+print('Accuracy Score:with poly kernel and degree ')
+print(metrics.accuracy_score(Y_Test,Y_Pred)) 
+
+
+
+# Plot data points using linear
+print('Plot using Linear ')
+plt.scatter(X_Test[:, 0], X_Test[:, 1],c=Y_Test)  
+#plt.scatter(X_Train[:, 0], X_Train[:, 1],c=Y_Train)
+# Create the hyperplane
+w = classifier.coef_[0]
+a = -w[0] / w[1]
+xx = np.linspace(-2.5, 2.5)
+yy = a * xx - (classifier.intercept_[0]) / w[1]  
+# Plot the hyperplane
+plt.plot(xx, yy)
+plt.axis("off"), plt.show();
